@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:led_display_flutter/home_page.dart';
 import 'package:led_display_flutter/home_screen.dart';
 import 'package:led_display_flutter/size.dart';
 
@@ -10,7 +9,8 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   final duration = Duration(milliseconds: 300);
-  final menuWidth = size.width / 2;
+  final menuWidth = size.width / 2.5;
+  /// MenuPage가 나올 크기 지정
   MenuStatus _menuStatus = MenuStatus.closed;
   double bodyXPos = 0;
   double menuXPos = size.width;
@@ -24,7 +24,7 @@ class _MenuPageState extends State<MenuPage> {
           children: <Widget>[
             AnimatedContainer(
                 duration: duration,
-                curve: Curves.fastOutSlowIn,
+                curve: Curves.easeInOutCubic,
                 child: HomeScreen(onMenuChanged: () {
                   setState(() {
                     _menuStatus = (_menuStatus == MenuStatus.closed)
