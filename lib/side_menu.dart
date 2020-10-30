@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SideMenu extends StatelessWidget {
   final double menuWidth;
-
   const SideMenu({Key key, this.menuWidth}) : super(key: key);
 
   @override
@@ -97,6 +99,7 @@ class SideMenu extends StatelessWidget {
                   child: Text("개인정보 처리방침", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, color: Colors.grey[200])
                   ),
                 ),
+                onTap: _embeddedURL,
               ),
               /// 개인정보 처리방침
             ],
@@ -104,5 +107,14 @@ class SideMenu extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _embeddedURL() async {
+    const embedded_software_lab = "https://sites.google.com/site/hnuesw/link/privacy";
+    if (await canLaunch(embedded_software_lab)) {
+      await launch(embedded_software_lab, forceSafariVC: false, forceWebView: false);
+    } else {
+      throw 'Could not launch $embedded_software_lab';
+    }
   }
 }
