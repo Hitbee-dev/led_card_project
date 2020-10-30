@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/home_screen.dart';
+import 'package:led_display_flutter/side_menu.dart';
 import 'package:led_display_flutter/size.dart';
+
+const duration = Duration(milliseconds: 300);
 
 class MenuPage extends StatefulWidget {
   @override
@@ -8,17 +11,17 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  final duration = Duration(milliseconds: 300);
+
   final menuWidth = size.width / 2.5;
   /// MenuPage가 나올 크기 지정
   MenuStatus _menuStatus = MenuStatus.closed;
   double bodyXPos = 0;
-  double menuXPos = size.width;
+  double menuXPos = -size.width;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.black,
         body: Stack(
           /// 화면 전체를 이동시키기 위해 Stack으로 감싸준다.
           children: <Widget>[
@@ -34,11 +37,11 @@ class _MenuPageState extends State<MenuPage> {
                     switch (_menuStatus) {
                       case MenuStatus.opened:
                         bodyXPos = menuWidth;
-                        menuXPos = size.width - menuWidth;
+                        menuXPos = size.width - menuWidth*2.5;
                         break;
                       case MenuStatus.closed:
                         bodyXPos = 0;
-                        menuXPos = size.width;
+                        menuXPos = -size.width;
                         break;
                     }
                   });
@@ -46,8 +49,9 @@ class _MenuPageState extends State<MenuPage> {
                 transform: Matrix4.translationValues(bodyXPos, 0, 0)),
             AnimatedContainer(
               duration: duration,
-              child: Positioned(
-                  top: 0, bottom: 0, width: size.width / 2, child: Container()),
+              curve: Curves.easeInOutCubic,
+              transform: Matrix4.translationValues(menuXPos, 0, 0),
+              child: SideMenu(menuWidth: menuWidth),
             ),
 
             /// Positioned는 Stack안에서만 사용된다.(포지션 값)

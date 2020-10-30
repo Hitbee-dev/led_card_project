@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'menu_page.dart';
+
 class HomeScreen extends StatefulWidget {
   final Function onMenuChanged;
 
@@ -9,13 +11,26 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
   int gchcount = 0;
   int sochcount = 0;
   int exitcount = 0;
   String gch = "assets/images/gch1.png";
   String soch = "assets/images/soch1.png";
   String exit = "assets/images/exit1.png";
+  AnimationController _iconAnimationController;
+
+  @override
+  void initState() {
+    _iconAnimationController = AnimationController(vsync: this, duration: duration);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _iconAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +50,21 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text("LED Display APP"),
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(
-                  Icons.list,
-                  color: Colors.white,
-                ),
+                icon: AnimatedIcon(
+                    icon: AnimatedIcons.menu_close,
+                    progress: _iconAnimationController),
                 onPressed: () {
                   widget.onMenuChanged();
+                  _iconAnimationController.status == AnimationStatus.completed
+                      ? _iconAnimationController.reverse()
+                      : _iconAnimationController.forward();
                 },
               ),
             ),
             body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // _appbar(),
                 Expanded(child: _home_screen())
@@ -61,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             _cheerbutton(),
+            SizedBox(height: 30),
             _exitbutton(),
             Expanded(flex: 1, child: Container()),
             // 맨 밑에 회사 정보를 표기하기 위한 빈 공간 채우기
