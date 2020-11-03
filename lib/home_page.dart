@@ -33,9 +33,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.black));
-
-    if (size == null) size = MediaQuery.of(context).size;
     /// 상태바 색상 변경
+    if (size == null) size = MediaQuery.of(context).size;
+
     return WillPopScope(
       onWillPop: () async {
         bool result = _isEnd();

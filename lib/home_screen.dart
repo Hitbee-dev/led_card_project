@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:led_display_flutter/group_cheer_page.dart';
 import 'menu_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,9 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
-  int gchcount = 0;
-  int sochcount = 0;
-  int exitcount = 0;
   String gch = "assets/images/gch1.png";
   String soch = "assets/images/soch1.png";
   String exit = "assets/images/exit1.png";
@@ -100,13 +97,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             icon: Image.asset(gch),
             onPressed: () {
               setState(() {
-                if (gchcount == 0) {
-                  gch = "assets/images/gch2.png";
-                  gchcount++;
-                } else {
-                  gch = "assets/images/gch1.png";
-                  gchcount--;
-                }
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(builder: (BuildContext context) {
+                      return GroupCheerPage();
+                    })
+                );
               });
             },
           ),
@@ -121,13 +117,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             icon: Image.asset(soch),
             onPressed: () {
               setState(() {
-                if (sochcount == 0) {
-                  soch = "assets/images/soch2.png";
-                  sochcount++;
-                } else {
-                  soch = "assets/images/soch1.png";
-                  sochcount--;
-                }
+
               });
             },
           ),
@@ -145,13 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           icon: Image.asset(exit),
           onPressed: () {
             setState(() {
-              if (exitcount == 0) {
-                exit = "assets/images/exit2.png";
-                exitcount++;
-              } else {
-                exit = "assets/images/exit1.png";
-                exitcount--;
-              }
+
             });
           },
         ),
