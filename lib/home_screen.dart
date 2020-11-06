@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/group_cheer_page.dart';
-import 'menu_page.dart';
+import 'package:led_display_flutter/solo_cheer_page.dart';
+import 'package:led_display_flutter/menu_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function onMenuChanged;
@@ -117,7 +118,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             icon: Image.asset(soch),
             onPressed: () {
               setState(() {
-
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(builder: (BuildContext context) {
+                      return SoloCheerPage();
+                    })
+                );
               });
             },
           ),

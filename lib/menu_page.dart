@@ -6,6 +6,7 @@ import 'package:led_display_flutter/size.dart';
 const duration = Duration(milliseconds: 300);
 
 class MenuPage extends StatefulWidget {
+
   @override
   _MenuPageState createState() => _MenuPageState();
 }

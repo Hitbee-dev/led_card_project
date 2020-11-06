@@ -1,6 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:led_display_flutter/group_cheer_page.dart';
+import 'package:led_display_flutter/solo_cheer_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SideMenu extends StatelessWidget {
@@ -40,8 +40,21 @@ class SideMenu extends StatelessWidget {
                   Icons.group_add,
                   color: Colors.white,
                 ),
-                title: Text("단체응원", style: TextStyle(color: Colors.white)
+                title: InkWell(
+                  child: Container(
+                    child: Text("그룹응원", style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
+                onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(builder: (BuildContext context) {
+                          return GroupCheerPage();
+                        })
+                    );
+                  // Scaffold.of(context).showSnackBar(SnackBar(content: Text('tap'),));  // SnackBar = 밑에 알림뜨는 거
+                },
               ),
               /// Group Cheer
               ListTile(
@@ -49,8 +62,21 @@ class SideMenu extends StatelessWidget {
                   Icons.group,
                   color: Colors.white,
                 ),
-                title: Text("개인응원", style: TextStyle(color: Colors.white)
+                title: InkWell(
+                  child: Container(
+                    child: Text("개인응원", style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                        return SoloCheerPage();
+                      })
+                  );
+                  // Scaffold.of(context).showSnackBar(SnackBar(content: Text('tap'),));  // SnackBar = 밑에 알림뜨는 거
+                },
               ),
               /// Solo Cheer
               ListTile(
@@ -80,8 +106,15 @@ class SideMenu extends StatelessWidget {
                   Icons.exit_to_app,
                   color: Colors.white,
                 ),
-                title: Text("나가기", style: TextStyle(color: Colors.white)
+                title: InkWell(
+                  child: Container(
+                    child: Text("나가기", style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
+                onTap: () {
+                  // Scaffold.of(context).showSnackBar(SnackBar(content: Text('tap'),));  // SnackBar = 밑에 알림뜨는 거
+                },
               ),
               /// Log Out
               Padding(

@@ -61,15 +61,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         padding: const EdgeInsets.only(top: 200),
         child: Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
-          // child: Container(
-          // clipBehavior: Clip.antiAlias,
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.all(Radius.circular(30)),
-          //     image: DecorationImage(
-          //         image: AssetImage("assets/images/background_pop.png"),
-          //         fit: BoxFit.cover)
-          // ),
-          // color: Colors.white,
           child: Column(
             children: [
               Row(
