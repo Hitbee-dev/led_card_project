@@ -16,6 +16,9 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
   String ledstatus = "LED 시작";
   String ledstart = "LED 시작";
   String ledend = "LED 종료";
+  String colorMode = "";
+  String selectMode = "";
+  String randomMode = "랜덤모드 실행중 - 비활성화";
 
   @override
   void initState() {
@@ -109,6 +112,11 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
           onChanged: (value) {
             setState(() {
               isSwitched = value;
+              if(isSwitched == false) {
+                colorMode = selectMode;
+              } else {
+                colorMode = randomMode;
+              }
               // print(isSwitched);
             });
           },
@@ -149,8 +157,12 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         height: 150,
         width: 300,
         child: RaisedButton(
+          child: Text(colorMode,
+            style: TextStyle(color: Colors.grey, fontSize: 20)),
           color: Colors.white,
-          onPressed: () {},
+          onPressed: () {
+
+          },
         ),
       )
     ]);
