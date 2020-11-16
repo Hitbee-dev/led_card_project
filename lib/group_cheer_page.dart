@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/nfc_tag.dart';
 import 'package:led_display_flutter/qr_code.dart';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner; //qrscan 패키지를 scanner 별칭으로 사용.
 
 class GroupCheerPage extends StatefulWidget {
@@ -13,6 +16,7 @@ class GroupCheerPage extends StatefulWidget {
 }
 
 class _GroupCheerPageState extends State<GroupCheerPage> {
+  ValueNotifier<dynamic> result = ValueNotifier(null);
   final _c = TextEditingController();
   String saved_seat_data = "";
 
@@ -58,6 +62,13 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
             )),
       ),
     );
+  }
+
+  void _tagRead() {
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      result.value = tag.data;
+      NfcManager.instance.stopSession();
+    });
   }
 
   Widget _home_screen() {
@@ -106,12 +117,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         width: 75,
         child: IconButton(
           icon: Image.asset("assets/images/nfc.png"),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute<void>(builder: (BuildContext context) {
-                  return NFCTag();
-                }));
-          },
+          onPressed: _tagRead,
         ),
       ),
       Container(
