@@ -1,6 +1,9 @@
 import 'dart:ui';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:led_display_flutter/nfc_tag.dart';
+import 'package:led_display_flutter/qr_code.dart';
+import 'package:qrscan/qrscan.dart' as scanner; //qrscan 패키지를 scanner 별칭으로 사용.
 
 class GroupCheerPage extends StatefulWidget {
   const GroupCheerPage({Key key}) : super(key: key);
@@ -11,6 +14,7 @@ class GroupCheerPage extends StatefulWidget {
 
 class _GroupCheerPageState extends State<GroupCheerPage> {
   final _c = TextEditingController();
+  String saved_seat_data = "";
 
   @override
   void initState() {
@@ -28,12 +32,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       child: Container(
         //컨테이너로 감싼다.
         decoration: BoxDecoration(
-            //decoration 을 준다.
+          //decoration 을 준다.
             image: DecorationImage(
                 image: AssetImage("assets/images/background.png"),
                 fit: BoxFit.fill)),
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.transparent, //스캐폴드에 백그라운드를 투명하게 한다.
             appBar: AppBar(
               elevation: 0,
@@ -102,6 +106,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         width: 75,
         child: IconButton(
           icon: Image.asset("assets/images/nfc.png"),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute<void>(builder: (BuildContext context) {
+                  return NFCTag();
+                }));
+          },
         ),
       ),
       Container(
@@ -120,7 +130,13 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         height: 75,
         width: 75,
         child: IconButton(
-          icon: Image.asset("assets/images/qrcode.png"),
+            icon: Image.asset("assets/images/qrcode.png"),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute<void>(builder: (BuildContext context) {
+                  return QRCode();
+                }));
+          },
         ),
       ),
       Container(
@@ -134,46 +150,48 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   Row _seatinfo() {
-
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          height: 75,
-          width: 75,
-          child: IconButton(
-            icon: Image.asset("assets/images/seat.png"),
+        children: [
+          Container(
+            height: 75,
+            width: 75,
+            child: IconButton(
+              icon: Image.asset("assets/images/seat.png"),
+            ),
           ),
-        ),
-        Container(
+          Container(
             height: 50,
             width: 100,
-            child: TextField(
+            child: TextFormField(
               style: TextStyle(fontSize: 18, color: Colors.white),
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
+              decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white, width: 2.0)
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white,width: 2.0)
-                  ),
-                  labelText: "좌석번호",
-                  labelStyle: TextStyle(fontSize: 20, color: Colors.white),
                 ),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white, width: 2.0)
+                ),
+                labelText: "좌석번호",
+                labelStyle: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               keyboardType: TextInputType.number,
+              onSaved: (String value) {
+                saved_seat_data = value;
+              },
               controller: _c,
             ),
           ),
-        Container(
-          child: IconButton(
-            icon: Icon(Icons.send, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                _c.text = "";
-              });
-            },
-          ),
-        )
-    ]);
+          Container(
+            child: IconButton(
+              icon: Icon(Icons.send, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  _c.text = "";
+                });
+              },
+            ),
+          )
+        ]);
   }
 
   Widget _companyinfo() {
