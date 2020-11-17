@@ -1,18 +1,12 @@
 import 'dart:ui';
-import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:led_display_flutter/qr_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
-
-import 'nfc_tag.dart'; //qrscan 패키지를 scanner 별칭으로 사용.
 
 class GroupCheerPage extends StatefulWidget {
   const GroupCheerPage({Key key}) : super(key: key);
@@ -118,7 +112,10 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         width: 75,
         child: IconButton(
           icon: Image.asset("assets/images/nfc.png"),
-          onPressed: _tagRead,
+          onPressed: () {
+            _loading();
+            _tagRead();
+          }
           // onPressed: () {
           //   setState(() {
           //     Navigator.push(
@@ -141,18 +138,48 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     ]);
   }
 
+  Widget _loading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.pop(context);
+        });
+        /// Dialog 언제 꺼지게 할지 Setting
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)
+          ),
+          content: SizedBox(
+            height: 200,
+            child: Center(
+              child: SizedBox(
+                child: new CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation(Colors.black),
+                  strokeWidth: 5.0,
+                ),
+                height: 50.0,
+                width: 50.0,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _tagRead() {
-    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       result.value = tag.data;
-      print(tag.data["ndef"]);
-      print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      print(list);
+      // print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      // var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      // print(list);
       // UnmodifiableUint8ListView(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      print(result.value);
+      // print(result.value);
       NfcManager.instance.stopSession();
     });
   }
+  // TODO List = Payload Data 가져오는 방법 찾기
 
   Column _qrcheer() {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [

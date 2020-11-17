@@ -16,7 +16,7 @@ class SideMenu extends StatelessWidget {
           color: Colors.grey[900],
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: <Widget> [
               ListTile(
                 title: Align(
                   alignment: Alignment.center,
@@ -42,7 +42,7 @@ class SideMenu extends StatelessWidget {
                 ),
                 title: InkWell(
                   child: Container(
-                    child: Text("그룹응원", style: TextStyle(color: Colors.white),
+                    child: Text("단체응원", style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -81,6 +81,15 @@ class SideMenu extends StatelessWidget {
               /// Solo Cheer
               ListTile(
                 leading: Icon(
+                  Icons.bluetooth_searching,
+                  color: Colors.white,
+                ),
+                title: Text("블루투스", style: TextStyle(color: Colors.white)
+                ),
+              ),
+              /// ColorMode
+              ListTile(
+                leading: Icon(
                   Icons.bug_report,
                   color: Colors.white,
                 ),
@@ -88,15 +97,6 @@ class SideMenu extends StatelessWidget {
                 ),
               ),
               /// TestMode
-              ListTile(
-                leading: Icon(
-                  Icons.color_lens,
-                  color: Colors.white,
-                ),
-                title: Text("색상", style: TextStyle(color: Colors.white)
-                ),
-              ),
-              /// ColorMode
               Expanded(
                 child: Container(),
               ),
