@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:led_display_flutter/home_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

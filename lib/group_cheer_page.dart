@@ -1,12 +1,18 @@
 import 'dart:ui';
+import 'dart:io';
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:led_display_flutter/nfc_tag.dart';
-import 'package:led_display_flutter/qr_code.dart';
 import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:led_display_flutter/qr_code.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'package:qrscan/qrscan.dart' as scanner; //qrscan 패키지를 scanner 별칭으로 사용.
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
+
+import 'nfc_tag.dart'; //qrscan 패키지를 scanner 별칭으로 사용.
 
 class GroupCheerPage extends StatefulWidget {
   const GroupCheerPage({Key key}) : super(key: key);
@@ -17,12 +23,14 @@ class GroupCheerPage extends StatefulWidget {
 
 class _GroupCheerPageState extends State<GroupCheerPage> {
   ValueNotifier<dynamic> result = ValueNotifier(null);
-  final _c = TextEditingController();
   String saved_seat_data = "";
+  Uint8List bytes = Uint8List(0);
+  TextEditingController _outputController;
 
   @override
   void initState() {
     super.initState();
+    this._outputController = new TextEditingController();
   }
 
   @override
@@ -67,6 +75,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   void _tagRead() {
     NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       result.value = tag.data;
+      print(tag.data["ndef"]);
+      print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      print(list);
+      // UnmodifiableUint8ListView(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      print(result.value);
       NfcManager.instance.stopSession();
     });
   }
@@ -118,6 +132,16 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         child: IconButton(
           icon: Image.asset("assets/images/nfc.png"),
           onPressed: _tagRead,
+          // onPressed: () {
+          //   setState(() {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute<void>(builder: (BuildContext context) {
+          //           return NFCTag();
+          //         })
+          //     );
+          //   });
+          // },
         ),
       ),
       Container(
@@ -137,12 +161,13 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         width: 75,
         child: IconButton(
             icon: Image.asset("assets/images/qrcode.png"),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute<void>(builder: (BuildContext context) {
-                  return QRCode();
-                }));
-          },
+          onPressed: _scan,
+          // onPressed: () {
+          //   Navigator.push(context,
+          //       MaterialPageRoute<void>(builder: (BuildContext context) {
+          //         return QRCode();
+          //       }));
+          // },
         ),
       ),
       Container(
@@ -153,6 +178,11 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                 color: Colors.white)),
       )
     ]);
+  }
+
+  Future _scan() async {
+    String barcode = await scanner.scan();
+    this._outputController.text = barcode;
   }
 
   Row _seatinfo() {
@@ -184,7 +214,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               onSaved: (String value) {
                 saved_seat_data = value;
               },
-              controller: _c,
+              controller: this._outputController,
             ),
           ),
           Container(
@@ -192,7 +222,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               icon: Icon(Icons.send, color: Colors.white),
               onPressed: () {
                 setState(() {
-                  _c.text = "";
+                  _outputController.text = "";
                 });
               },
             ),
