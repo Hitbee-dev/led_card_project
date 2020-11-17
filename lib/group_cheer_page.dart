@@ -72,19 +72,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     );
   }
 
-  void _tagRead() {
-    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-      result.value = tag.data;
-      print(tag.data["ndef"]);
-      print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      print(list);
-      // UnmodifiableUint8ListView(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
-      print(result.value);
-      NfcManager.instance.stopSession();
-    });
-  }
-
   Widget _home_screen() {
     return Padding(
         padding: const EdgeInsets.only(top: 200),
@@ -152,6 +139,19 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                 color: Colors.white)),
       )
     ]);
+  }
+
+  void _tagRead() {
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      result.value = tag.data;
+      print(tag.data["ndef"]);
+      print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      print(list);
+      // UnmodifiableUint8ListView(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
+      print(result.value);
+      NfcManager.instance.stopSession();
+    });
   }
 
   Column _qrcheer() {
