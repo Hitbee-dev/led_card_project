@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:flutter/material.dart';
+import 'package:led_display_flutter/color_dialog.dart';
 
 class SoloCheerPage extends StatefulWidget {
   const SoloCheerPage({Key key}) : super(key: key);
@@ -161,7 +162,14 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
             style: TextStyle(color: Colors.grey, fontSize: 20)),
           color: Colors.white,
           onPressed: () {
-
+            setState(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                        return ColorDialog();
+                      })
+                  );
+            });
           },
         ),
       )
