@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:led_display_flutter/color_dialog.dart';
 
 class SoloCheerPage extends StatefulWidget {
-  const SoloCheerPage({Key key}) : super(key: key);
+  final Color getcolor;
+  const SoloCheerPage({Key key,this.getcolor}) : super(key: key);
 
   @override
   _SoloCheerPageState createState() => _SoloCheerPageState();
@@ -20,10 +21,12 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
   String colorMode = "";
   String selectMode = "";
   String randomMode = "랜덤모드 실행중 - 비활성화";
+  Color setcolor;
 
   @override
   void initState() {
     super.initState();
+    setcolor = widget.getcolor;
   }
 
   @override
@@ -113,10 +116,13 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
           onChanged: (value) {
             setState(() {
               isSwitched = value;
+              // setcolor = widget.getcolor;
               if(isSwitched == false) {
                 colorMode = selectMode;
+                setcolor = widget.getcolor;
               } else {
                 colorMode = randomMode;
+                setcolor = Colors.grey;
               }
               // print(isSwitched);
             });
@@ -159,8 +165,8 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         width: 300,
         child: RaisedButton(
           child: Text(colorMode,
-            style: TextStyle(color: Colors.grey, fontSize: 20)),
-          color: Colors.white,
+            style: TextStyle(color: Colors.black, fontSize: 20)),
+          color: setcolor,
           onPressed: () {
             setState(() {
                   Navigator.push(
@@ -183,7 +189,7 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         width: 180,
         child: RaisedButton(
           child: Text(ledstatus, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-          color: Colors.white,
+          color: setcolor,
           onPressed: () {
             setState(() {
               if (isLed == true) {
