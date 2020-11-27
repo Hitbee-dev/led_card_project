@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/color_dialog.dart';
+import 'package:led_display_flutter/usb_test.dart';
 
 class SoloCheerPage extends StatefulWidget {
   final Color getcolor;
@@ -195,9 +196,21 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
               if (isLed == true) {
                 isLed = false;
                 ledstatus = ledend;
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute<void>(builder: (BuildContext context) {
+                //       return USB_Test();
+                //     })
+                // );
               } else {
                 isLed = true;
                 ledstatus = ledstart;
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute<void>(builder: (BuildContext context) {
+                //       return USB_Test();
+                //     })
+                // );
               }
             });
           },

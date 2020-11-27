@@ -21,13 +21,15 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_colorpicker: ^0.3.4
+  usb_serial: ^0.2.4
   image_picker: ^0.6.7+14
   image_gallery_saver: ^1.6.5
   nfc_manager: ^2.0.2
-  flutter_nfc_reader:
-    git:
-      url: git://github.com/matteocrippa/flutter-nfc-reader.git
-      ref: master
+#  flutter_nfc_reader:
+#    git:
+#      url: git://github.com/matteocrippa/flutter-nfc-reader.git
+#      ref: master
   url_launcher: ^5.7.6
   gradient_text: ^1.0.2
   nfc_in_flutter: ^2.0.5
