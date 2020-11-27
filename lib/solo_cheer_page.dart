@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/color_dialog.dart';
-import 'package:led_display_flutter/usb_test.dart';
+import 'package:led_display_flutter/display_output_color.dart';
 
 class SoloCheerPage extends StatefulWidget {
   final Color getcolor;
@@ -123,7 +123,7 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
                 setcolor = widget.getcolor;
               } else {
                 colorMode = randomMode;
-                setcolor = Colors.grey;
+                setcolor = Color(0xFF9E9E9E); // gray
               }
               // print(isSwitched);
             });
@@ -168,26 +168,32 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
           child: Text(colorMode,
             style: TextStyle(color: Colors.black, fontSize: 20)),
           color: setcolor,
-          onPressed: () {
-            setState(() {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                        return ColorDialog();
-                      })
-                  );
-            });
-          },
+          onPressed: _setactive
         ),
       )
     ]);
+  }
+
+  _setactive() {
+    if(isSwitched == false) {
+      setState(() {
+        Navigator.push(
+            context,
+            MaterialPageRoute<void>(builder: (BuildContext context) {
+              return ColorDialog();
+            })
+        );
+      });
+    } else {
+      return null;
+    }
   }
 
   Row _setstartend() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       Container(
         height: 50,
-        width: 180,
+        width: 90,
         child: RaisedButton(
           child: Text(ledstatus, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           color: setcolor,
@@ -212,6 +218,24 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
                 //     })
                 // );
               }
+            });
+          },
+        ),
+      ),
+      Container(
+        height: 50,
+        width: 90,
+        child: RaisedButton(
+          child: Text("화면 시작", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          color: setcolor,
+          onPressed: () {
+            setState(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(builder: (BuildContext context) {
+                    return DisplayOutPutColor(getcolor: setcolor,);
+                  })
+              );
             });
           },
         ),
