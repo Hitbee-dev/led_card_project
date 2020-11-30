@@ -4,9 +4,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+
+import 'led_server.dart';
 
 class GroupCheerPage extends StatefulWidget {
   const GroupCheerPage({Key key}) : super(key: key);
@@ -189,12 +190,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         child: IconButton(
             icon: Image.asset("assets/images/qrcode.png"),
           onPressed: _scan,
-          // onPressed: () {
-          //   Navigator.push(context,
-          //       MaterialPageRoute<void>(builder: (BuildContext context) {
-          //         return QRCode();
-          //       }));
-          // },
         ),
       ),
       Container(
@@ -250,6 +245,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               onPressed: () {
                 setState(() {
                   _outputController.text = "";
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(builder: (BuildContext context) {
+                        return LEDServer();
+                      })
+                  );
                 });
               },
             ),

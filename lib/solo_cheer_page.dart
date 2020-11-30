@@ -101,6 +101,31 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         ));
   }
 
+  Column _colorchange() {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Container(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Text(
+            "아래 박스를 클릭하여 색상을 선택 해 주세요.",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
+          ),
+        ),
+      ),
+      Container(
+        height: 150,
+        width: 300,
+        child: RaisedButton(
+          child: Text(colorMode,
+            style: TextStyle(color: Colors.black, fontSize: 20)),
+          color: setcolor,
+          onPressed: _setactive
+        ),
+      )
+    ]);
+  }
+
   Row _optionmode() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
@@ -135,42 +160,19 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
       Container(
           child: GradientText(
         "Random Mode",
-        gradient: LinearGradient(colors: [
-          Colors.red,
-          Colors.orange,
-          Colors.yellow,
-          Colors.green,
-          Colors.blue,
-          Colors.purple
-        ]),
+        gradient: LinearGradient(
+          colors: [
+            Colors.red,
+            Colors.orange,
+            Colors.yellow,
+            Colors.green,
+            Colors.blue,
+            Colors.purple
+          ]
+        ),
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         textAlign: TextAlign.center,
       ))
-    ]);
-  }
-
-  Column _colorchange() {
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Text(
-            "아래 박스를 클릭하여 색상을 선택 해 주세요.",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
-          ),
-        ),
-      ),
-      Container(
-        height: 150,
-        width: 300,
-        child: RaisedButton(
-          child: Text(colorMode,
-            style: TextStyle(color: Colors.black, fontSize: 20)),
-          color: setcolor,
-          onPressed: _setactive
-        ),
-      )
     ]);
   }
 

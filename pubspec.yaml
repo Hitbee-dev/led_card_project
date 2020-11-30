@@ -26,10 +26,8 @@ dependencies:
   image_picker: ^0.6.7+14
   image_gallery_saver: ^1.6.5
   nfc_manager: ^2.0.2
-#  flutter_nfc_reader:
-#    git:
-#      url: git://github.com/matteocrippa/flutter-nfc-reader.git
-#      ref: master
+  get_ip: ^0.4.0
+  shared_preferences: ^0.5.12+4
   url_launcher: ^5.7.6
   gradient_text: ^1.0.2
   nfc_in_flutter: ^2.0.5
