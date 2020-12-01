@@ -212,7 +212,16 @@ class LEDServerState extends State<LEDServer> {
   }
 
   void sendMessage(String message) {
-    ledSocket.write("$message\n");
+    int seatnum = int.parse(message);
+    String parseseat;
+    String resultseatnum;
+    if(seatnum > -1 && seatnum < 10) {
+      parseseat = seatnum.toString();
+      resultseatnum = "0"+parseseat;
+    } else {
+      resultseatnum = message;
+    }
+    ledSocket.write(resultseatnum);
   }
 
 

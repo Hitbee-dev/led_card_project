@@ -30,9 +30,10 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   String localIP = "";
   String serverIP = "203.247.38.123";
   int port = 9870;
-  // TextEditingController ipCon = TextEditingController();
-  // TextEditingController msgCon;
+
   Socket ledSocket;
+
+  int serverCheck = 0;
 
   List<MessageItem> items = List<MessageItem>();
 
@@ -66,14 +67,15 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       child: Container(
         //컨테이너로 감싼다.
         decoration: BoxDecoration(
-          //decoration 을 준다.
+            //decoration 을 준다.
             image: DecorationImage(
                 image: AssetImage("assets/images/background.png"),
                 fit: BoxFit.fill)),
         child: Scaffold(
             key: scaffoldKey,
             resizeToAvoidBottomPadding: false,
-            backgroundColor: Colors.transparent, //스캐폴드에 백그라운드를 투명하게 한다.
+            backgroundColor: Colors.transparent,
+            //스캐폴드에 백그라운드를 투명하게 한다.
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -87,9 +89,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               children: <Widget>[
                 ipInfoArea(),
                 // _appbar(),
-                Expanded(
-                    child: _home_screen()
-                )
+                Expanded(child: _home_screen())
               ],
             )),
       ),
@@ -136,12 +136,26 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   Widget ipInfoArea() {
+    int check = 0;
+    if (serverCheck == 0) {
+      check = 0;
+    } else {
+      check = 1;
+    }
+
+    final icons = [
+      Icons.remove_circle_outline_sharp,
+      Icons.check_circle_outline
+    ];
+
+    final colors = [Colors.red, Colors.green];
+
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 40),
       child: Card(
         child: ListTile(
           dense: true,
-          leading: Text("Device IP"),
+          leading: Icon(icons[check], color: colors[check]),
           title: Text(localIP),
         ),
       ),
@@ -154,12 +168,11 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         height: 75,
         width: 75,
         child: IconButton(
-          icon: Image.asset("assets/images/nfc.png"),
-          onPressed: () {
-            _loading();
-            _tagRead();
-          }
-        ),
+            icon: Image.asset("assets/images/nfc.png"),
+            onPressed: () {
+              _loading();
+              _tagRead();
+            }),
       ),
       Container(
         child: Text("NFC TAG",
@@ -178,11 +191,11 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         Future.delayed(Duration(seconds: 3), () {
           Navigator.pop(context);
         });
+
         /// Dialog 언제 꺼지게 할지 Setting
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0)
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           content: SizedBox(
             height: 200,
             child: Center(
@@ -202,7 +215,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   void _tagRead() {
-      NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       result.value = tag.data;
       // print(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
       // var list = new List.from(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]);
@@ -212,6 +225,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       NfcManager.instance.stopSession();
     });
   }
+
   // TODO List = Payload Data 가져오는 방법 찾기
 
   Column _qrcheer() {
@@ -220,7 +234,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         height: 75,
         width: 75,
         child: IconButton(
-            icon: Image.asset("assets/images/qrcode.png"),
+          icon: Image.asset("assets/images/qrcode.png"),
           onPressed: _scan,
         ),
       ),
@@ -240,69 +254,70 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   Row _seatinfo() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: 75,
-            width: 75,
-            child: IconButton(
-              icon: Image.asset("assets/images/seat.png"),
-            ),
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      Container(
+        height: 75,
+        width: 75,
+        child: IconButton(
+          icon: Image.asset("assets/images/seat.png"),
+        ),
+      ),
+      Container(
+        height: 50,
+        width: 100,
+        child: TextFormField(
+          style: TextStyle(fontSize: 18, color: Colors.white),
+          decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 2.0)),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 2.0)),
+            labelText: "좌석번호",
+            labelStyle: TextStyle(fontSize: 20, color: Colors.white),
           ),
-          Container(
-            height: 50,
-            width: 100,
-            child: TextFormField(
-              style: TextStyle(fontSize: 18, color: Colors.white),
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white, width: 2.0)
-                ),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white, width: 2.0)
-                ),
-                labelText: "좌석번호",
-                labelStyle: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              keyboardType: TextInputType.number,
-              onSaved: (String value) {
-                saved_seat_data = value;
-              },
-              controller: this.seatnumber,
-            ),
-          ),
-          Container(
-            child: IconButton(
-              icon: Icon(Icons.send, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  if(seatnumber.text == "") {
-                    Fluttertoast.showToast(
-                        msg: "좌석번호를 입력해주세요.",
-                        backgroundColor: Colors.white,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1
-                    );
-                  } else {
-                    if(ledSocket != null) {
-                      Fluttertoast.showToast(
-                          msg: "이미 서버에 연결되어 있습니다.\n기존 서버가 종료됩니다.",
-                          backgroundColor: Colors.white,
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1
-                      );
-                      disconnectFromServer();
-                    } else {
-                      connectToServer();
-                    }
-                  }
-                });
-              },
-            ),
-          )
-        ]);
+          keyboardType: TextInputType.number,
+          onSaved: (String value) {
+            saved_seat_data = value;
+          },
+          controller: this.seatnumber,
+        ),
+      ),
+      Container(
+        child: IconButton(
+          icon: Icon(Icons.send, color: Colors.white),
+          onPressed: () {
+            setState(() {
+              if (seatnumber.text == "") {
+                Fluttertoast.showToast(
+                    msg: "좌석번호를 입력해주세요.",
+                    backgroundColor: Colors.white,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1);
+              } else {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute<void>(builder: (BuildContext context) {
+                //       return LEDServer();
+                //     })
+                // );
+                if (ledSocket != null) {
+                  Fluttertoast.showToast(
+                      msg: "이미 서버에 연결되어 있습니다.\n기존 서버가 종료됩니다.",
+                      backgroundColor: Colors.white,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1);
+                  disconnectFromServer();
+                } else {
+                  connectToServer();
+                }
+              }
+            });
+          },
+        ),
+      )
+    ]);
   }
 
   void connectToServer() async {
@@ -314,12 +329,13 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       setState(() {
         ledSocket = socket;
         (ledSocket != null) ? submitMessage() : null;
+        serverCheck = 1;
       });
 
       showSnackBarWithKey(
           "Server : ${socket.remoteAddress.address}:${socket.remotePort} 연결되었습니다.");
       socket.listen(
-            (onData) {
+        (onData) {
           print(String.fromCharCodes(onData).trim());
           setState(() {
             items.insert(
@@ -337,7 +353,8 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   void onDone() {
-    showSnackBarWithKey("Connection has terminated.");
+    showSnackBarWithKey("서버 연결이 종료되었습니다.");
+    serverCheck = 0;
     disconnectFromServer();
   }
 
@@ -348,22 +365,30 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   }
 
   void disconnectFromServer() {
-      print("disconnectFromServer");
-      Fluttertoast.showToast(
-          msg: "서버가 종료되었습니다.",
-          backgroundColor: Colors.white,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1
-      );
-      ledSocket.close();
-      setState(() {
-        ledSocket = null;
-      });
+    print("disconnectFromServer");
+    Fluttertoast.showToast(
+        msg: "서버가 종료되었습니다.",
+        backgroundColor: Colors.white,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1);
+    ledSocket.close();
+    setState(() {
+      ledSocket = null;
+    });
   }
 
   void sendMessage(String message) {
-    ledSocket.write("$message\n");
+    int seatnum = int.parse(message);
+    String parseseat;
+    String resultseatnum;
+    if (seatnum > -1 && seatnum < 10) {
+      parseseat = seatnum.toString();
+      resultseatnum = "0" + parseseat;
+    } else {
+      resultseatnum = message;
+    }
+    ledSocket.write(resultseatnum);
   }
 
   void _storeServerIP() async {
@@ -384,7 +409,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       items.insert(0, MessageItem(localIP, seatnumber.text));
     });
     sendMessage(seatnumber.text);
-    seatnumber.clear();
+    seatnumber.clear(); // textfield 없애주는부분
   }
 
   showSnackBarWithKey(String message) {
@@ -394,7 +419,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         content: Text(message),
         action: SnackBarAction(
           label: '확인',
-          onPressed: (){},
+          onPressed: () {},
         ),
       ));
   }
