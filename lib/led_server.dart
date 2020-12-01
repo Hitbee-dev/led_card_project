@@ -16,7 +16,7 @@ class LEDServer extends StatefulWidget {
 
 class LEDServerState extends State<LEDServer> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  int seatnum = 1;
   String localIP = "";
   int port = 9870;
   List<MessageItem> items = List<MessageItem>();
@@ -24,7 +24,7 @@ class LEDServerState extends State<LEDServer> {
   TextEditingController ipCon = TextEditingController();
   TextEditingController msgCon = TextEditingController();
 
-  Socket clientSocket;
+  Socket ledSocket;
 
   @override
   void initState() {
@@ -52,7 +52,9 @@ class LEDServerState extends State<LEDServer> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        appBar: AppBar(title: Text("Socket Client")),
+        appBar: AppBar(title: Text("LED SERVER"),
+        centerTitle: true
+        ),
         body: Column(
           children: <Widget>[
             ipInfoArea(),
@@ -67,7 +69,7 @@ class LEDServerState extends State<LEDServer> {
     return Card(
       child: ListTile(
         dense: true,
-        leading: Text("IP"),
+        leading: Text("My IP"),
         title: Text(localIP),
       ),
     );
@@ -96,9 +98,9 @@ class LEDServerState extends State<LEDServer> {
               fillColor: Colors.grey[50]),
         ),
         trailing: RaisedButton(
-          child: Text((clientSocket != null) ? "Disconnect" : "Connect"),
+          child: Text((ledSocket != null) ? "Disconnect" : "Connect"),
           onPressed:
-          (clientSocket != null) ? disconnectFromServer : connectToServer,
+          (ledSocket != null) ? disconnectFromServer : connectToServer,
         ),
       ),
     );
@@ -153,7 +155,7 @@ class LEDServerState extends State<LEDServer> {
           icon: Icon(Icons.send),
           color: Colors.blue,
           disabledColor: Colors.grey,
-          onPressed: (clientSocket != null) ? submitMessage : null,
+          onPressed: (ledSocket != null) ? submitMessage : null,
         ),
       ),
     );
@@ -166,7 +168,7 @@ class LEDServerState extends State<LEDServer> {
     Socket.connect(ipCon.text, port, timeout: Duration(seconds: 5))
         .then((socket) {
       setState(() {
-        clientSocket = socket;
+        ledSocket = socket;
       });
 
       showSnackBarWithKey(
@@ -177,7 +179,7 @@ class LEDServerState extends State<LEDServer> {
           setState(() {
             items.insert(
                 0,
-                MessageItem(clientSocket.remoteAddress.address,
+                MessageItem(ledSocket.remoteAddress.address,
                     String.fromCharCodes(onData).trim()));
           });
         },
@@ -203,14 +205,14 @@ class LEDServerState extends State<LEDServer> {
   void disconnectFromServer() {
     print("disconnectFromServer");
 
-    clientSocket.close();
+    ledSocket.close();
     setState(() {
-      clientSocket = null;
+      ledSocket = null;
     });
   }
 
   void sendMessage(String message) {
-    clientSocket.write("$message\n");
+    ledSocket.write("$message\n");
   }
 
 

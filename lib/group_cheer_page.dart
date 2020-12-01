@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get_ip/get_ip.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'led_server.dart';
 
@@ -17,20 +21,43 @@ class GroupCheerPage extends StatefulWidget {
 }
 
 class _GroupCheerPageState extends State<GroupCheerPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<dynamic> result = ValueNotifier(null);
   String saved_seat_data = "";
   Uint8List bytes = Uint8List(0);
-  TextEditingController _outputController;
+  TextEditingController seatnumber;
+
+  String localIP = "";
+  String serverIP = "203.247.38.123";
+  int port = 9870;
+  // TextEditingController ipCon = TextEditingController();
+  // TextEditingController msgCon;
+  Socket ledSocket;
+
+  List<MessageItem> items = List<MessageItem>();
 
   @override
   void initState() {
     super.initState();
-    this._outputController = new TextEditingController();
+    getIP();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadServerIP();
+    });
+    this.seatnumber = new TextEditingController();
+    // this.msgCon = new TextEditingController();
   }
 
   @override
   void dispose() {
+    disconnectFromServer();
     super.dispose();
+  }
+
+  void getIP() async {
+    var ip = await GetIp.ipAddress;
+    setState(() {
+      localIP = ip;
+    });
   }
 
   @override
@@ -44,6 +71,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                 image: AssetImage("assets/images/background.png"),
                 fit: BoxFit.fill)),
         child: Scaffold(
+            key: scaffoldKey,
             resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.transparent, //스캐폴드에 백그라운드를 투명하게 한다.
             appBar: AppBar(
@@ -57,6 +85,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                ipInfoArea(),
                 // _appbar(),
                 Expanded(
                     child: _home_screen()
@@ -69,7 +98,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
 
   Widget _home_screen() {
     return Padding(
-        padding: const EdgeInsets.only(top: 200),
+        padding: const EdgeInsets.only(top: 170),
         child: Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
           child: Column(
@@ -106,6 +135,19 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         ));
   }
 
+  Widget ipInfoArea() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 40, right: 40),
+      child: Card(
+        child: ListTile(
+          dense: true,
+          leading: Text("Device IP"),
+          title: Text(localIP),
+        ),
+      ),
+    );
+  }
+
   Column _nfccheer() {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
@@ -117,16 +159,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
             _loading();
             _tagRead();
           }
-          // onPressed: () {
-          //   setState(() {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute<void>(builder: (BuildContext context) {
-          //           return NFCTag();
-          //         })
-          //     );
-          //   });
-          // },
         ),
       ),
       Container(
@@ -204,7 +236,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
 
   Future _scan() async {
     String barcode = await scanner.scan();
-    this._outputController.text = barcode;
+    this.seatnumber.text = barcode;
   }
 
   Row _seatinfo() {
@@ -236,7 +268,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               onSaved: (String value) {
                 saved_seat_data = value;
               },
-              controller: this._outputController,
+              controller: this.seatnumber,
             ),
           ),
           Container(
@@ -244,18 +276,127 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               icon: Icon(Icons.send, color: Colors.white),
               onPressed: () {
                 setState(() {
-                  _outputController.text = "";
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                        return LEDServer();
-                      })
-                  );
+                  if(seatnumber.text == "") {
+                    Fluttertoast.showToast(
+                        msg: "좌석번호를 입력해주세요.",
+                        backgroundColor: Colors.white,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1
+                    );
+                  } else {
+                    if(ledSocket != null) {
+                      Fluttertoast.showToast(
+                          msg: "이미 서버에 연결되어 있습니다.\n기존 서버가 종료됩니다.",
+                          backgroundColor: Colors.white,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1
+                      );
+                      disconnectFromServer();
+                    } else {
+                      connectToServer();
+                    }
+                  }
                 });
               },
             ),
           )
         ]);
+  }
+
+  void connectToServer() async {
+    print("Destination Address: ${serverIP}");
+    _storeServerIP();
+
+    Socket.connect(serverIP, port, timeout: Duration(seconds: 5))
+        .then((socket) {
+      setState(() {
+        ledSocket = socket;
+        (ledSocket != null) ? submitMessage() : null;
+      });
+
+      showSnackBarWithKey(
+          "Server : ${socket.remoteAddress.address}:${socket.remotePort} 연결되었습니다.");
+      socket.listen(
+            (onData) {
+          print(String.fromCharCodes(onData).trim());
+          setState(() {
+            items.insert(
+                0,
+                MessageItem(ledSocket.remoteAddress.address,
+                    String.fromCharCodes(onData).trim()));
+          });
+        },
+        onDone: onDone,
+        onError: onError,
+      );
+    }).catchError((e) {
+      showSnackBarWithKey(e.toString());
+    });
+  }
+
+  void onDone() {
+    showSnackBarWithKey("Connection has terminated.");
+    disconnectFromServer();
+  }
+
+  void onError(e) {
+    print("onError: $e");
+    showSnackBarWithKey(e.toString());
+    disconnectFromServer();
+  }
+
+  void disconnectFromServer() {
+      print("disconnectFromServer");
+      Fluttertoast.showToast(
+          msg: "서버가 종료되었습니다.",
+          backgroundColor: Colors.white,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1
+      );
+      ledSocket.close();
+      setState(() {
+        ledSocket = null;
+      });
+  }
+
+  void sendMessage(String message) {
+    ledSocket.write("$message\n");
+  }
+
+  void _storeServerIP() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("serverIP", serverIP);
+  }
+
+  void _loadServerIP() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    setState(() {
+      serverIP = sp.getString("serverIP");
+    });
+  }
+
+  void submitMessage() {
+    if (seatnumber.text.isEmpty) return;
+    setState(() {
+      items.insert(0, MessageItem(localIP, seatnumber.text));
+    });
+    sendMessage(seatnumber.text);
+    seatnumber.clear();
+  }
+
+  showSnackBarWithKey(String message) {
+    scaffoldKey.currentState
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: '확인',
+          onPressed: (){},
+        ),
+      ));
   }
 
   Widget _companyinfo() {
@@ -273,4 +414,11 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       ),
     );
   }
+}
+
+class MessageItem {
+  String owner;
+  String content;
+
+  MessageItem(this.owner, this.content);
 }
