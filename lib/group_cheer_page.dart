@@ -501,7 +501,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      item.content,
+                      (item.owner == localIP) ? item.content : QueueDataList.toString(),
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
