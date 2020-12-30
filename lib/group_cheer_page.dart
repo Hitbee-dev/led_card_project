@@ -28,13 +28,19 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   TextEditingController seatnumber;
 
   String localIP = "";
-  String serverIP = "203.247.38.123";
+  // String serverIP = "203.247.38.123";
+  String serverIP = "192.168.0.2";
   int port = 9870;
 
   Socket ledSocket;
-
   int serverCheck = 0;
 
+  String QueueData;
+  String QueueSet;
+  // ignore: non_constant_identifier_names
+  var QueueArray = List<dynamic>();
+  // ignore: non_constant_identifier_names
+  var QueueDataList = List<dynamic>();
   List<MessageItem> items = List<MessageItem>();
 
   @override
@@ -43,6 +49,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     getIP();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadServerIP();
+      ///initState를 함으로써 값이 잘려버림
     });
     this.seatnumber = new TextEditingController();
     // this.msgCon = new TextEditingController();
@@ -127,6 +134,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                 ),
               ),
               _seatinfo(),
+              _messageListArea(),
               Expanded(flex: 1, child: Container()),
               // 맨 밑에 회사 정보를 표기하기 위한 빈 공간 채우기
               _companyinfo(),
@@ -260,6 +268,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
         width: 75,
         child: IconButton(
           icon: Image.asset("assets/images/seat.png"),
+          onPressed: () {},
         ),
       ),
       Container(
@@ -294,13 +303,15 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 1);
-              } else {
+              }
+              else {
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute<void>(builder: (BuildContext context) {
                 //       return LEDServer();
                 //     })
                 // );
+
                 if (ledSocket != null) {
                   Fluttertoast.showToast(
                       msg: "이미 서버에 연결되어 있습니다.\n기존 서버가 종료됩니다.",
@@ -316,7 +327,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
             });
           },
         ),
-      )
+      ),
     ]);
   }
 
@@ -342,6 +353,26 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                 0,
                 MessageItem(ledSocket.remoteAddress.address,
                     String.fromCharCodes(onData).trim()));
+            // QueueData.insert(0, String.fromCharCodes(onData).trim());
+            QueueData = String.fromCharCodes(onData).trim();
+            QueueArray = QueueData.split('/');
+            // print(QueueArray);
+            QueueDataList = List.from(QueueArray);
+            for(int i=0; i<QueueArray.length; i++) {
+              // 배열의 길이를 같게 해주기위해 복사
+              if((i+5)%5 == 0) {
+                QueueDataResult(i);
+              } else if((i+4)%5 == 0) {
+                QueueColorResult(i);
+              } else if((i+3)%5 == 0) {
+                QueueTimeResult(i);
+              } else if((i+2)%5 == 0) {
+                QueueTimeResult(i);
+              } else if((i+1)%5 == 0) {
+                QueueTimeResult(i);
+              }
+            }
+            print(QueueDataList);
           });
         },
         onDone: onDone,
@@ -350,6 +381,44 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     }).catchError((e) {
       showSnackBarWithKey(e.toString());
     });
+  }
+
+  void QueueDataResult(int i) {
+    QueueSet = QueueArray[i];
+    if(QueueSet.length <= 9) {
+      QueueDataList[i] = QueueSet;
+    } else {
+      QueueDataList[i] = QueueSet.substring(QueueSet.length-9, QueueSet.length);
+    }
+
+    // if(QueueSet.length == 9) {
+    //   QueueDataList[i] = QueueSet;
+    // } else if(QueueSet.length == 10) {
+    //   QueueDataList[i] = QueueSet.substring(1);
+    // } else if(QueueSet.length == 11) {
+    //   QueueDataList[i] = QueueSet.substring(2);
+    // } else {
+    //   QueueDataList[i] = QueueSet.substring(3);
+    // }
+  }
+
+  void QueueColorResult(int i) {
+    QueueSet = QueueArray[i];
+    if(QueueSet == "null") {
+      QueueDataList[i] = QueueSet;
+    } else {
+      QueueDataList[i] = int.parse(QueueSet.substring(1));
+    }
+  }
+
+  void QueueTimeResult(int i) {
+    QueueSet = QueueArray[i];
+    if(QueueSet == "null") {
+      QueueDataList[i] = QueueSet;
+    } else {
+      int Queueindex = QueueSet.indexOf(".");
+      QueueDataList[i] = int.parse(QueueSet.substring(0, Queueindex));
+    }
   }
 
   void onDone() {
@@ -367,7 +436,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   void disconnectFromServer() {
     print("disconnectFromServer");
     Fluttertoast.showToast(
-        msg: "서버가 종료되었습니다.",
+        msg: "서버 연결이 종료되었습니다.",
         backgroundColor: Colors.white,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
@@ -401,6 +470,46 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     setState(() {
       serverIP = sp.getString("serverIP");
     });
+  }
+
+  Widget _messageListArea() {
+    return Expanded(
+      child: ListView.builder(
+          reverse: true,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            MessageItem item = items[index];
+
+            return Container(
+              alignment: (item.owner == localIP)
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: (item.owner == localIP)
+                        ? Colors.blue[100]
+                        : Colors.grey[200]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      (item.owner == localIP) ? "Client" : "Server",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      item.content,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+    );
   }
 
   void submitMessage() {
