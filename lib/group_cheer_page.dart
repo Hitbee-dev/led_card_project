@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_ip/get_ip.dart';
+import 'package:led_display_flutter/display_output_color.dart';
+import 'package:led_display_flutter/display_output_server.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -156,7 +158,10 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       Icons.check_circle_outline
     ];
 
-    final colors = [Colors.red, Colors.green];
+    final colors = [
+      Colors.red,
+      Colors.green
+    ];
 
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 40),
@@ -373,6 +378,13 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               }
             }
             print(QueueDataList);
+            Navigator.push(
+              context,
+                MaterialPageRoute<void>(builder: (BuildContext context) {
+                  return DisplayOutPutServer(queuedata: QueueDataList);
+                  // return DisplayOutPutColor();
+                })
+            );
           });
         },
         onDone: onDone,
