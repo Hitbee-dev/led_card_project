@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,7 +8,8 @@ import 'package:led_display_flutter/size.dart';
 
 class DisplayOutPutServer extends StatefulWidget {
   var queuedata = List<dynamic>();
-  DisplayOutPutServer({Key key,this.queuedata}) : super(key: key);
+
+  DisplayOutPutServer({Key key, this.queuedata}) : super(key: key);
 
   @override
   _DisplayOutPutServerState createState() => _DisplayOutPutServerState();
@@ -14,29 +18,73 @@ class DisplayOutPutServer extends StatefulWidget {
 class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
   var QueueDataList = List<dynamic>();
   int ColorCount = 0;
-  String QueueSet;
+  int iRunTime = 0;
+  int StartRunTime = 0;
+  int RunCount = 0;
+  String sRunTime = "";
+  Timer timer;
+
 
 
   @override
   void initState() {
     super.initState();
     QueueDataList = widget.queuedata;
-    for(int i=0; i<QueueDataList.length; i++) {
-      // 배열의 길이를 같게 해주기위해 복사
-      if((i+4)%5 == 0) {
-        QueueColorResult(i);
-      }
-      print(QueueDataList);
-    }
+    StartRunTime = QueueDataList[2];
+    iRunTime = StartRunTime;
+    setTimer(iRunTime);
+  }
+
+  void setTimer(iRunTime) {
+    Timer.periodic(Duration(milliseconds: iRunTime), (timer) {
+      setState(() {
+        // QueueDataList = widget.queuedata;
+        if ((RunCount + 4) % 5 == 0) {
+          QueueColorResult(RunCount);
+          timer.cancel();
+          Timer.run(() {
+            return setTimer(iRunTime);
+          });
+        } else if ((RunCount + 2) % 5 == 0) {
+          (QueueDataList[RunCount] == "null") ? timer.cancel() : iRunTime = QueueDataList[RunCount];
+          timer.cancel();
+          Timer.run(() {
+            return setTimer(iRunTime);
+          });
+        } else {
+          iRunTime = 0;
+          timer.cancel();
+          if(RunCount+1 == QueueDataList.length) {
+            timer.cancel();
+          } else {
+            Timer.run(() {
+              return setTimer(iRunTime);
+            });
+          }
+        }
+        // (RunCount+1 == QueueDataList.length) ? timer.cancel() : RunCount++; //무한 run방지
+        if(RunCount+1 == QueueDataList.length) {
+          timer.cancel();
+        } else {
+          RunCount++;
+        }
+        print("StartRunTime : ${StartRunTime}");
+        print("RunCount : ${RunCount}");
+        print("Length : ${QueueDataList.length}");
+        print(iRunTime);
+      });
+    });
   }
 
   @override
   void dispose() {
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // QueueDataOutPut();
     return SafeArea(
       child: Container(
         width: size.width,
@@ -46,20 +94,32 @@ class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
     );
   }
 
+  // void QueueDataOutPut() {
+  //   for (int i = 0; i < QueueDataList.length; i++) {
+  //     if ((i + 4) % 5 == 0) {
+  //       QueueColorResult(i);
+  //     } else if ((i + 2) % 5 == 0) {
+  //       (QueueDataList[i] == "null")
+  //           ? sRunTime = QueueDataList[i]
+  //           : iRunTime = QueueDataList[i];
+  //     }
+  //   }
+  // }
+
   void QueueColorResult(int i) {
-    if(QueueDataList[i] == 16777216) {
+    if (QueueDataList[i] == 16777216) {
       ColorCount = 0; // black
-    } else if(QueueDataList[i] == 16738666) {
+    } else if (QueueDataList[i] == 16738666) {
       ColorCount = 1;
-    } else if(QueueDataList[i] == 16150519) {
+    } else if (QueueDataList[i] == 16150519) {
       ColorCount = 2;
-    } else if(QueueDataList[i] == 2555649) {
+    } else if (QueueDataList[i] == 2555649) {
       ColorCount = 3;
-    } else if(QueueDataList[i] == 65519) {
+    } else if (QueueDataList[i] == 65519) {
       ColorCount = 4;
-    } else if(QueueDataList[i] == 256) {
+    } else if (QueueDataList[i] == 256) {
       ColorCount = 5;
-    } else if(QueueDataList[i] == "null") {
+    } else if (QueueDataList[i] == "null") {
       ColorCount;
     } else {
       Fluttertoast.showToast(
@@ -72,7 +132,6 @@ class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
   }
 
   Widget _queue_color(BuildContext context) {
-
     final colors = [
       Colors.black,
       Colors.green[700],
@@ -81,9 +140,8 @@ class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
       Colors.red,
       Colors.yellow,
     ];
-
     return Scaffold(
-        backgroundColor: colors[ColorCount],
+      backgroundColor: colors[ColorCount],
     );
   }
 }
