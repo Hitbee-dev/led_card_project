@@ -13,7 +13,7 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
 
-  final menuWidth = size.width / 2.5;
+  final menuWidth = size.width / 2;
   /// MenuPage가 나올 크기 지정
   MenuStatus _menuStatus = MenuStatus.closed;
   double bodyXPos = 0;
@@ -38,7 +38,7 @@ class _MenuPageState extends State<MenuPage> {
                     switch (_menuStatus) {
                       case MenuStatus.opened:
                         bodyXPos = menuWidth;
-                        menuXPos = size.width - menuWidth*2.5;
+                        menuXPos = size.width - menuWidth*2;
                         break;
                       case MenuStatus.closed:
                         bodyXPos = 0;

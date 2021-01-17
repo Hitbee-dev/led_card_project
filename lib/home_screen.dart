@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:led_display_flutter/group_cheer_page.dart';
 import 'package:led_display_flutter/size.dart';
@@ -31,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   int _deviceId;
   TextEditingController _textController = TextEditingController();
 
+  double mheight = size.height/5;
 
   @override
   void initState() {
@@ -80,12 +80,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ),
             body: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.max,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 // _appbar(),
-                Expanded(child: _home_screen())
+                Expanded(
+                    child: _home_screen()
+                )
               ],
             )),
       ),
@@ -94,7 +95,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _home_screen() {
     return Padding(
-        padding: const EdgeInsets.only(top: 250),
+      padding: EdgeInsets.only(top: mheight),
+      child: Container(
         child: Column(
           children: [
             _cheerbutton(),
@@ -107,7 +109,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             // 맨 밑에 회사 정보를 표기하기 위한 빈 공간 채우기
             _companyinfo(),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   Padding _emptyline() {

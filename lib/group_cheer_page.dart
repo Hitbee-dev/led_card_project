@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_ip/get_ip.dart';
 import 'package:led_display_flutter/display_output_color.dart';
 import 'package:led_display_flutter/display_output_server.dart';
+import 'package:led_display_flutter/size.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +29,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   String saved_seat_data = "";
   Uint8List bytes = Uint8List(0);
   TextEditingController seatnumber;
-
+  double mheight = size.height/5;
   String localIP = "";
   // String serverIP = "203.247.38.123";
   String serverIP = "192.168.0.2";
@@ -50,7 +51,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     super.initState();
     getIP();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadServerIP();
+      // _loadServerIP();
       ///initState를 함으로써 값이 잘려버림
     });
     this.seatnumber = new TextEditingController();
@@ -107,7 +108,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
 
   Widget _home_screen() {
     return Padding(
-        padding: const EdgeInsets.only(top: 170),
+        padding: EdgeInsets.only(top: mheight),
         child: Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
           child: Column(
@@ -477,12 +478,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     sp.setString("serverIP", serverIP);
   }
 
-  void _loadServerIP() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    setState(() {
-      serverIP = sp.getString("serverIP");
-    });
-  }
+  // void _loadServerIP() async {
+  //   SharedPreferences sp = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     serverIP = sp.getString("serverIP");
+  //   });
+  // }
 
   Widget _messageListArea() {
     return Expanded(
