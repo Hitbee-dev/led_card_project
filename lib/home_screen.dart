@@ -34,20 +34,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   void initState() {
+    _iconAnimationController = AnimationController(vsync: this, duration: duration);
+    super.initState();
     UsbSerial.usbEventStream.listen((UsbEvent event) {
       _getPorts();
     });
 
     _getPorts();
-    _iconAnimationController = AnimationController(vsync: this, duration: duration);
-    super.initState();
-    _connectTo(null);
   }
 
   @override
   void dispose() {
     _iconAnimationController.dispose();
     super.dispose();
+    _connectTo(null);
   }
 
   @override
