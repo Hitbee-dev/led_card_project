@@ -6,16 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:led_display_flutter/size.dart';
 
-class DisplayOutPutServer extends StatefulWidget {
+class DisplayOutPutQueueServer extends StatefulWidget {
   var queuedata = List<dynamic>();
 
-  DisplayOutPutServer({Key key, this.queuedata}) : super(key: key);
+  DisplayOutPutQueueServer({Key key, this.queuedata}) : super(key: key);
 
   @override
-  _DisplayOutPutServerState createState() => _DisplayOutPutServerState();
+  _DisplayOutPutQueueServerState createState() => _DisplayOutPutQueueServerState();
 }
 
-class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
+class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   var QueueDataList = List<dynamic>();
   int ColorCount = 0;
   int iRunTime = 0;
@@ -93,18 +93,6 @@ class _DisplayOutPutServerState extends State<DisplayOutPutServer> {
       ),
     );
   }
-
-  // void QueueDataOutPut() {
-  //   for (int i = 0; i < QueueDataList.length; i++) {
-  //     if ((i + 4) % 5 == 0) {
-  //       QueueColorResult(i);
-  //     } else if ((i + 2) % 5 == 0) {
-  //       (QueueDataList[i] == "null")
-  //           ? sRunTime = QueueDataList[i]
-  //           : iRunTime = QueueDataList[i];
-  //     }
-  //   }
-  // }
 
   void QueueColorResult(int i) {
     if (QueueDataList[i] == 16777216) {

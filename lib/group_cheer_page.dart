@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_ip/get_ip.dart';
-import 'package:led_display_flutter/display_output_color.dart';
-import 'package:led_display_flutter/display_output_server.dart';
+import 'package:led_display_flutter/display_output_queue_server.dart';
+import 'package:led_display_flutter/display_output_real_server.dart';
 import 'package:led_display_flutter/size.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
@@ -56,6 +56,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     });
     this.seatnumber = new TextEditingController();
     // this.msgCon = new TextEditingController();
+    QueueData;
   }
 
   @override
@@ -361,31 +362,12 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                     String.fromCharCodes(onData).trim()));
             // QueueData.insert(0, String.fromCharCodes(onData).trim());
             QueueData = String.fromCharCodes(onData).trim();
-            QueueArray = QueueData.split('/');
-            // print(QueueArray);
-            QueueDataList = List.from(QueueArray);
-            for(int i=0; i<QueueArray.length; i++) {
-              // 배열의 길이를 같게 해주기위해 복사
-              if((i+5)%5 == 0) {
-                QueueDataResult(i);
-              } else if((i+4)%5 == 0) {
-                QueueColorResult(i);
-              } else if((i+3)%5 == 0) {
-                QueueTimeResult(i);
-              } else if((i+2)%5 == 0) {
-                QueueTimeResult(i);
-              } else if((i+1)%5 == 0) {
-                QueueTimeResult(i);
-              }
+
+            if(QueueData[2] == "Q") {
+              QueueServer(); // QueueData 방식으로 전송했을 때
+            } else {
+              RealServer(); // 실시간으로 데이터가 전송 됐을 때
             }
-            print(QueueDataList);
-            Navigator.push(
-              context,
-                MaterialPageRoute<void>(builder: (BuildContext context) {
-                  return DisplayOutPutServer(queuedata: QueueDataList);
-                  // return DisplayOutPutColor();
-                })
-            );
           });
         },
         onDone: onDone,
@@ -396,6 +378,41 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     });
   }
 
+  void QueueServer() {
+    QueueArray = QueueData.split('/');
+    QueueDataList = List.from(QueueArray);
+    for(int i=0; i<QueueArray.length; i++) {
+      // 배열의 길이를 같게 해주기위해 복사
+      if((i+5)%5 == 0) {
+        QueueDataResult(i);
+      } else if((i+4)%5 == 0) {
+        QueueColorResult(i);
+      } else if((i+3)%5 == 0) {
+        QueueTimeResult(i);
+      } else if((i+2)%5 == 0) {
+        QueueTimeResult(i);
+      } else if((i+1)%5 == 0) {
+        QueueTimeResult(i);
+      }
+    }
+    print(QueueDataList);
+    Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+          return DisplayOutPutQueueServer(queuedata: QueueDataList);
+        })
+    );
+  }
+
+  void RealServer() {
+    Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+          return DisplayOutPutRealServer(realdata: QueueData);
+        })
+    );
+  }
+
   void QueueDataResult(int i) {
     QueueSet = QueueArray[i];
     if(QueueSet.length <= 9) {
@@ -403,16 +420,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     } else {
       QueueDataList[i] = QueueSet.substring(QueueSet.length-9, QueueSet.length);
     }
-
-    // if(QueueSet.length == 9) {
-    //   QueueDataList[i] = QueueSet;
-    // } else if(QueueSet.length == 10) {
-    //   QueueDataList[i] = QueueSet.substring(1);
-    // } else if(QueueSet.length == 11) {
-    //   QueueDataList[i] = QueueSet.substring(2);
-    // } else {
-    //   QueueDataList[i] = QueueSet.substring(3);
-    // }
   }
 
   void QueueColorResult(int i) {
@@ -477,13 +484,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString("serverIP", serverIP);
   }
-
-  // void _loadServerIP() async {
-  //   SharedPreferences sp = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     serverIP = sp.getString("serverIP");
-  //   });
-  // }
 
   Widget _messageListArea() {
     return Expanded(
