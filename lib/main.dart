@@ -1,6 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:led_display_flutter/group_cheer_page.dart';
 import 'package:led_display_flutter/home_page.dart';
+import 'package:led_display_flutter/solo_cheer_page.dart';
+
+import 'display_output_real_server.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +19,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //Debug 표시를 보이지 않음
       home: HomePage(),
+      routes: <String, WidgetBuilder> {
+        '/grouppage' : (BuildContext context) => GroupCheerPage(),
+        '/solopage' : (BuildContext context) => SoloCheerPage(),
+      } // BackStack 관리
     );
   }
 }

@@ -18,20 +18,49 @@ class DisplayOutPutRealServer extends StatefulWidget {
 
 class _DisplayOutPutRealServerState extends State<DisplayOutPutRealServer> {
   String QueueData = "";
+  String CutData = "";
+  String ColorData = "";
   int ColorCount = 0;
-  int iRunTime = 0;
-  int StartRunTime = 0;
-  int RunCount = 0;
-  String sRunTime = "";
-  Timer timer;
-
-
 
   @override
   void initState() {
     super.initState();
     QueueData = widget.realdata;
-    print(QueueData);
+    CutData = QueueData;
+    RealSD(CutData);
+    QueueColorResult(ColorData);
+    // print("Data : ${CutData}");
+  }
+
+  void RealSD(CutData) {
+    String RealData = CutData.substring(3);
+    ColorData = RealData;
+    return CutData;
+  }
+
+  void QueueColorResult(ColorData) {
+    if (ColorData == "16777216") {
+      ColorCount = 0; // black
+    } else if (ColorData == "16738666") {
+      ColorCount = 1;
+    } else if (ColorData == "16150519") {
+      ColorCount = 2;
+    } else if (ColorData == "2555649") {
+      ColorCount = 3;
+    } else if (ColorData == "65519") {
+      ColorCount = 4;
+    } else if (ColorData == "256") {
+      ColorCount = 5;
+    } else if (ColorData == "null") {
+      ColorCount;
+    } else {
+      Fluttertoast.showToast(
+          msg: "지정된 색상이 없습니다..",
+          backgroundColor: Colors.white,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1);
+    }
   }
 
   @override
@@ -43,37 +72,12 @@ class _DisplayOutPutRealServerState extends State<DisplayOutPutRealServer> {
   Widget build(BuildContext context) {
     // QueueDataOutPut();
     return SafeArea(
-      child: Container(
-        width: size.width,
-        height: size.height,
-        child: _queue_color(context),
-      ),
-    );
-  }
-
-  void QueueColorResult(int i) {
-    if (QueueData == "16777216") {
-      ColorCount = 0; // black
-    } else if (QueueData == "16738666") {
-      ColorCount = 1;
-    } else if (QueueData == "16150519") {
-      ColorCount = 2;
-    } else if (QueueData == "2555649") {
-      ColorCount = 3;
-    } else if (QueueData == "65519") {
-      ColorCount = 4;
-    } else if (QueueData == "256") {
-      ColorCount = 5;
-    } else if (QueueData == "null") {
-      ColorCount;
-    } else {
-      Fluttertoast.showToast(
-          msg: "지정된 색상이 없습니다..",
-          backgroundColor: Colors.white,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1);
-    }
+        child: Container(
+          width: size.width,
+          height: size.height,
+          child: _queue_color(context),
+        ),
+      );
   }
 
   Widget _queue_color(BuildContext context) {

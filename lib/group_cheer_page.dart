@@ -29,8 +29,9 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   String saved_seat_data = "";
   Uint8List bytes = Uint8List(0);
   TextEditingController seatnumber;
-  double mheight = size.height/5;
+  double mheight = size.height / 5;
   String localIP = "";
+
   // String serverIP = "203.247.38.123";
   String serverIP = "192.168.0.2";
   int port = 9870;
@@ -40,8 +41,10 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
 
   String QueueData;
   String QueueSet;
+
   // ignore: non_constant_identifier_names
   var QueueArray = List<dynamic>();
+
   // ignore: non_constant_identifier_names
   var QueueDataList = List<dynamic>();
   List<MessageItem> items = List<MessageItem>();
@@ -76,15 +79,16 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        //컨테이너로 감싼다.
-        decoration: BoxDecoration(
-            //decoration 을 준다.
-            image: DecorationImage(
-                image: AssetImage("assets/images/background.png"),
-                fit: BoxFit.fill)),
-        child: Scaffold(
+          //컨테이너로 감싼다.
+          decoration: BoxDecoration(
+              //decoration 을 준다.
+              image: DecorationImage(
+                  image: AssetImage("assets/images/background.png"),
+                  fit: BoxFit.fill)),
+          child: Scaffold(
             key: scaffoldKey,
             resizeToAvoidBottomPadding: false,
+            // 키보드 OverFLow방지
             backgroundColor: Colors.transparent,
             //스캐폴드에 백그라운드를 투명하게 한다.
             appBar: AppBar(
@@ -93,17 +97,22 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               title: Text("단체응원"),
               centerTitle: true,
             ),
-            body: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ipInfoArea(),
-                // _appbar(),
-                Expanded(child: _home_screen())
-              ],
-            )),
-      ),
+            body: GestureDetector(
+                behavior: HitTestBehavior.opaque, // 키보드 올라왔을 때 화면터치로 내리기
+                onTap: () {
+                  FocusScope.of(context).unfocus(); // 키보드 올라왔을 때 화면터치로 내리기
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    ipInfoArea(),
+                    // _appbar(),
+                    Expanded(child: _home_screen())
+                  ],
+                )),
+          )),
     );
   }
 
@@ -160,10 +169,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
       Icons.check_circle_outline
     ];
 
-    final colors = [
-      Colors.red,
-      Colors.green
-    ];
+    final colors = [Colors.red, Colors.green];
 
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 40),
@@ -310,8 +316,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 1);
-              }
-              else {
+              } else {
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute<void>(builder: (BuildContext context) {
@@ -363,7 +368,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
             // QueueData.insert(0, String.fromCharCodes(onData).trim());
             QueueData = String.fromCharCodes(onData).trim();
 
-            if(QueueData[2] == "Q") {
+            if (QueueData[2] == "Q") {
               QueueServer(); // QueueData 방식으로 전송했을 때
             } else {
               RealServer(); // 실시간으로 데이터가 전송 됐을 때
@@ -381,50 +386,51 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   void QueueServer() {
     QueueArray = QueueData.split('/');
     QueueDataList = List.from(QueueArray);
-    for(int i=0; i<QueueArray.length; i++) {
+    for (int i = 0; i < QueueArray.length; i++) {
       // 배열의 길이를 같게 해주기위해 복사
-      if((i+5)%5 == 0) {
+      if ((i + 5) % 5 == 0) {
         QueueDataResult(i);
-      } else if((i+4)%5 == 0) {
+      } else if ((i + 4) % 5 == 0) {
         QueueColorResult(i);
-      } else if((i+3)%5 == 0) {
+      } else if ((i + 3) % 5 == 0) {
         QueueTimeResult(i);
-      } else if((i+2)%5 == 0) {
+      } else if ((i + 2) % 5 == 0) {
         QueueTimeResult(i);
-      } else if((i+1)%5 == 0) {
+      } else if ((i + 1) % 5 == 0) {
         QueueTimeResult(i);
       }
     }
     print(QueueDataList);
-    Navigator.push(
-        context,
+    Navigator.push(context,
         MaterialPageRoute<void>(builder: (BuildContext context) {
-          return DisplayOutPutQueueServer(queuedata: QueueDataList);
-        })
-    );
+      return DisplayOutPutQueueServer(queuedata: QueueDataList);
+    }));
   }
 
   void RealServer() {
-    Navigator.push(
-        context,
-        MaterialPageRoute<void>(builder: (BuildContext context) {
-          return DisplayOutPutRealServer(realdata: QueueData);
-        })
-    );
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation1, animation2) =>
+            DisplayOutPutRealServer(realdata: QueueData),
+        transitionDuration: Duration(seconds: 0),
+      ),
+    ); // 애니메이션 없이 새 창 띄우는 방법
   }
 
   void QueueDataResult(int i) {
     QueueSet = QueueArray[i];
-    if(QueueSet.length <= 9) {
+    if (QueueSet.length <= 9) {
       QueueDataList[i] = QueueSet;
     } else {
-      QueueDataList[i] = QueueSet.substring(QueueSet.length-9, QueueSet.length);
+      QueueDataList[i] =
+          QueueSet.substring(QueueSet.length - 9, QueueSet.length);
     }
   }
 
   void QueueColorResult(int i) {
     QueueSet = QueueArray[i];
-    if(QueueSet == "null") {
+    if (QueueSet == "null") {
       QueueDataList[i] = QueueSet;
     } else {
       QueueDataList[i] = int.parse(QueueSet.substring(1));
@@ -433,7 +439,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
 
   void QueueTimeResult(int i) {
     QueueSet = QueueArray[i];
-    if(QueueSet == "null") {
+    if (QueueSet == "null") {
       QueueDataList[i] = QueueSet;
     } else {
       int Queueindex = QueueSet.indexOf(".");
@@ -500,7 +506,7 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: (item.owner == localIP)
@@ -514,7 +520,9 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      (item.owner == localIP) ? item.content : QueueDataList.toString(),
+                      (item.owner == localIP)
+                          ? item.content
+                          : QueueDataList.toString(),
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
