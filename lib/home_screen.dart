@@ -17,7 +17,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   String gch = "assets/images/gch1.png";
   String soch = "assets/images/soch1.png";
   String exit = "assets/images/exit1.png";
@@ -30,11 +31,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   int _deviceId;
   TextEditingController _textController = TextEditingController();
 
-  double mheight = size.height/5;
+  double mheight = size.height / 5;
 
   @override
   void initState() {
-    _iconAnimationController = AnimationController(vsync: this, duration: duration);
+    _iconAnimationController =
+        AnimationController(vsync: this, duration: duration);
     super.initState();
     UsbSerial.usbEventStream.listen((UsbEvent event) {
       _getPorts();
@@ -84,9 +86,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 // _appbar(),
-                Expanded(
-                    child: _home_screen()
-                )
+                Expanded(child: _home_screen())
               ],
             )),
       ),
@@ -116,21 +116,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Padding _emptyline() {
     return Padding(
-            padding: EdgeInsets.all(10),
-            child: Container(
-              height: 2.0,
-              width: size.width,
-              color: Colors.white,
-            ),
-          );
+      padding: EdgeInsets.all(10),
+      child: Container(
+        height: 2.0,
+        width: size.width,
+        color: Colors.white,
+      ),
+    );
   }
 
   Text _usbconnect() {
-    return Text(
-              _ports.length > 0
-                  ? "LED STICK을 찾음"
-                  : "LED STICK을 찾지못함",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white));
+    return Text(_ports.length > 0 ? "LED STICK을 찾음" : "LED STICK을 찾지못함",
+        style: TextStyle(
+            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white));
   }
 
   Row _cheerbutton() {
@@ -144,12 +142,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             icon: Image.asset(gch),
             onPressed: () {
               setState(() {
-                Navigator.push(
-                    context,
+                Navigator.push(context,
                     MaterialPageRoute<void>(builder: (BuildContext context) {
-                      return GroupCheerPage();
-                    })
-                );
+                  return GroupCheerPage();
+                }));
               });
             },
           ),
@@ -164,12 +160,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             icon: Image.asset(soch),
             onPressed: () {
               setState(() {
-                Navigator.push(
-                    context,
+                Navigator.push(context,
                     MaterialPageRoute<void>(builder: (BuildContext context) {
-                      return SoloCheerPage();
-                    })
-                );
+                  return SoloCheerPage();
+                }));
               });
             },
           ),
@@ -179,18 +173,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Row _exitbutton() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       Container(
         height: 80,
         width: 270,
         child: IconButton(
           icon: Image.asset(exit),
           onPressed: () {
-            setState(() {
-
-            });
+            setState(() {});
           },
         ),
       ),
@@ -270,11 +260,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     devices.forEach((device) {
       _ports.add(ListTile(
           leading: Icon(Icons.usb, color: Colors.white),
-          title: Text(device.productName, style: TextStyle(color: Colors.white)),
-          subtitle: Text(device.manufacturerName, style: TextStyle(color: Colors.white)),
+          title:
+              Text(device.productName, style: TextStyle(color: Colors.white)),
+          subtitle: Text(device.manufacturerName,
+              style: TextStyle(color: Colors.white)),
           trailing: RaisedButton(
-            child:
-            Text(_deviceId == device.deviceId ? "연결끊기" : "연결"),
+            child: Text(_deviceId == device.deviceId ? "연결끊기" : "연결"),
             onPressed: () {
               _connectTo(_deviceId == device.deviceId ? null : device)
                   .then((res) {

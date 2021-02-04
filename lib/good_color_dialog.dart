@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // import 'package:flutter/foundation.dart'
 //     show debugDefaultTargetPlatformOverride;
 
@@ -98,7 +99,7 @@ class _GoodColorDialogState extends State<GoodColorDialog> {
                                 showLabel: false,
                                 showIndicator: true,
                                 indicatorBorderRadius:
-                                const BorderRadius.vertical(
+                                    const BorderRadius.vertical(
                                   top: const Radius.circular(25.0),
                                 ),
                               ),

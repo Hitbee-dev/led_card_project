@@ -46,10 +46,12 @@ class _QRCodeState extends State<QRCode> {
                         onSubmitted: (value) => _generateBarCode(value),
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.text_fields),
-                          helperText: 'Please input your code to generage qrcode image.',
+                          helperText:
+                              'Please input your code to generage qrcode image.',
                           hintText: 'Please Input Your Code',
                           hintStyle: TextStyle(fontSize: 15),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 7, vertical: 15),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -59,10 +61,13 @@ class _QRCodeState extends State<QRCode> {
                         maxLines: 2,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.wrap_text),
-                          helperText: 'The barcode or qrcode you scan will be displayed in this area.',
-                          hintText: 'The barcode or qrcode you scan will be displayed in this area.',
+                          helperText:
+                              'The barcode or qrcode you scan will be displayed in this area.',
+                          hintText:
+                              'The barcode or qrcode you scan will be displayed in this area.',
                           hintStyle: TextStyle(fontSize: 15),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 7, vertical: 15),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 7, vertical: 15),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -104,19 +109,22 @@ class _QRCodeState extends State<QRCode> {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 9),
               decoration: BoxDecoration(
                 color: Colors.black12,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(4), topRight: Radius.circular(4)),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 40, right: 40, top: 30, bottom: 10),
+              padding:
+                  EdgeInsets.only(left: 40, right: 40, top: 30, bottom: 10),
               child: Column(
                 children: <Widget>[
                   SizedBox(
                     height: 190,
                     child: bytes.isEmpty
                         ? Center(
-                      child: Text('Empty code ... ', style: TextStyle(color: Colors.black38)),
-                    )
+                            child: Text('Empty code ... ',
+                                style: TextStyle(color: Colors.black38)),
+                          )
                         : Image.memory(bytes),
                   ),
                   Padding(
@@ -129,29 +137,38 @@ class _QRCodeState extends State<QRCode> {
                           child: GestureDetector(
                             child: Text(
                               'remove',
-                              style: TextStyle(fontSize: 15, color: Colors.blue),
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.blue),
                               textAlign: TextAlign.left,
                             ),
-                            onTap: () => this.setState(() => this.bytes = Uint8List(0)),
+                            onTap: () =>
+                                this.setState(() => this.bytes = Uint8List(0)),
                           ),
                         ),
-                        Text('|', style: TextStyle(fontSize: 15, color: Colors.black26)),
+                        Text('|',
+                            style:
+                                TextStyle(fontSize: 15, color: Colors.black26)),
                         Expanded(
                           flex: 5,
                           child: GestureDetector(
                             onTap: () async {
-                              final success = await ImageGallerySaver.saveImage(this.bytes);
+                              final success =
+                                  await ImageGallerySaver.saveImage(this.bytes);
                               SnackBar snackBar;
                               if (success) {
-                                snackBar = new SnackBar(content: new Text('Successful Preservation!'));
+                                snackBar = new SnackBar(
+                                    content:
+                                        new Text('Successful Preservation!'));
                                 Scaffold.of(context).showSnackBar(snackBar);
                               } else {
-                                snackBar = new SnackBar(content: new Text('Save failed!'));
+                                snackBar = new SnackBar(
+                                    content: new Text('Save failed!'));
                               }
                             },
                             child: Text(
                               'save',
-                              style: TextStyle(fontSize: 15, color: Colors.blue),
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.blue),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -167,7 +184,8 @@ class _QRCodeState extends State<QRCode> {
               child: Row(
                 children: <Widget>[
                   Icon(Icons.history, size: 16, color: Colors.black38),
-                  Text('  Generate History', style: TextStyle(fontSize: 14, color: Colors.black38)),
+                  Text('  Generate History',
+                      style: TextStyle(fontSize: 14, color: Colors.black38)),
                   Spacer(),
                   Icon(Icons.chevron_right, size: 16, color: Colors.black38),
                 ],
@@ -277,21 +295,6 @@ class _QRCodeState extends State<QRCode> {
     this.setState(() => this.bytes = result);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'dart:async';
 // import 'package:flutter/material.dart';

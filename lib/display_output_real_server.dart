@@ -13,7 +13,8 @@ class DisplayOutPutRealServer extends StatefulWidget {
   DisplayOutPutRealServer({Key key, this.realdata}) : super(key: key);
 
   @override
-  _DisplayOutPutRealServerState createState() => _DisplayOutPutRealServerState();
+  _DisplayOutPutRealServerState createState() =>
+      _DisplayOutPutRealServerState();
 }
 
 class _DisplayOutPutRealServerState extends State<DisplayOutPutRealServer> {
@@ -72,12 +73,12 @@ class _DisplayOutPutRealServerState extends State<DisplayOutPutRealServer> {
   Widget build(BuildContext context) {
     // QueueDataOutPut();
     return SafeArea(
-        child: Container(
-          width: size.width,
-          height: size.height,
-          child: _queue_color(context),
-        ),
-      );
+      child: Container(
+        width: size.width,
+        height: size.height,
+        child: _queue_color(context),
+      ),
+    );
   }
 
   Widget _queue_color(BuildContext context) {

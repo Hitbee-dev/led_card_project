@@ -6,7 +6,8 @@ import 'package:led_display_flutter/display_output_color.dart';
 
 class SoloCheerPage extends StatefulWidget {
   final Color getcolor;
-  const SoloCheerPage({Key key,this.getcolor}) : super(key: key);
+
+  const SoloCheerPage({Key key, this.getcolor}) : super(key: key);
 
   @override
   _SoloCheerPageState createState() => _SoloCheerPageState();
@@ -117,11 +118,10 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         height: 150,
         width: 300,
         child: RaisedButton(
-          child: Text(colorMode,
-            style: TextStyle(color: Colors.black, fontSize: 20)),
-          color: setcolor,
-          onPressed: _setactive
-        ),
+            child: Text(colorMode,
+                style: TextStyle(color: Colors.black, fontSize: 20)),
+            color: setcolor,
+            onPressed: _setactive),
       )
     ]);
   }
@@ -143,7 +143,7 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
             setState(() {
               isSwitched = value;
               // setcolor = widget.getcolor;
-              if(isSwitched == false) {
+              if (isSwitched == false) {
                 colorMode = selectMode;
                 setcolor = widget.getcolor;
               } else {
@@ -160,16 +160,14 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
       Container(
           child: GradientText(
         "Random Mode",
-        gradient: LinearGradient(
-          colors: [
-            Colors.red,
-            Colors.orange,
-            Colors.yellow,
-            Colors.green,
-            Colors.blue,
-            Colors.purple
-          ]
-        ),
+        gradient: LinearGradient(colors: [
+          Colors.red,
+          Colors.orange,
+          Colors.yellow,
+          Colors.green,
+          Colors.blue,
+          Colors.purple
+        ]),
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         textAlign: TextAlign.center,
       ))
@@ -177,14 +175,12 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
   }
 
   _setactive() {
-    if(isSwitched == false) {
+    if (isSwitched == false) {
       setState(() {
-        Navigator.push(
-            context,
+        Navigator.push(context,
             MaterialPageRoute<void>(builder: (BuildContext context) {
-              return ColorDialog();
-            })
-        );
+          return ColorDialog();
+        }));
       });
     } else {
       return null;
@@ -197,7 +193,8 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         height: 50,
         width: 90,
         child: RaisedButton(
-          child: Text(ledstatus, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          child: Text(ledstatus,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           color: setcolor,
           onPressed: () {
             setState(() {
@@ -228,16 +225,17 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         height: 50,
         width: 90,
         child: RaisedButton(
-          child: Text("화면 시작", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          child: Text("화면 시작",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           color: setcolor,
           onPressed: () {
             setState(() {
-              Navigator.push(
-                  context,
+              Navigator.push(context,
                   MaterialPageRoute<void>(builder: (BuildContext context) {
-                    return DisplayOutPutColor(getcolor: setcolor,);
-                  })
-              );
+                return DisplayOutPutColor(
+                  getcolor: setcolor,
+                );
+              }));
             });
           },
         ),
@@ -246,7 +244,8 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
         height: 50,
         width: 70,
         child: RaisedButton(
-          child: Text("닫기", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          child: Text("닫기",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           color: Colors.white,
           onPressed: () {
             Navigator.pop(context); // 뒤로가기

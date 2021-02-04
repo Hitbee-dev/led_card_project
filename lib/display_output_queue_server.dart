@@ -12,7 +12,8 @@ class DisplayOutPutQueueServer extends StatefulWidget {
   DisplayOutPutQueueServer({Key key, this.queuedata}) : super(key: key);
 
   @override
-  _DisplayOutPutQueueServerState createState() => _DisplayOutPutQueueServerState();
+  _DisplayOutPutQueueServerState createState() =>
+      _DisplayOutPutQueueServerState();
 }
 
 class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
@@ -23,8 +24,6 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   int RunCount = 0;
   String sRunTime = "";
   Timer timer;
-
-
 
   @override
   void initState() {
@@ -46,7 +45,9 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
             return setTimer(iRunTime);
           });
         } else if ((RunCount + 2) % 5 == 0) {
-          (QueueDataList[RunCount] == "null") ? timer.cancel() : iRunTime = QueueDataList[RunCount];
+          (QueueDataList[RunCount] == "null")
+              ? timer.cancel()
+              : iRunTime = QueueDataList[RunCount];
           timer.cancel();
           Timer.run(() {
             return setTimer(iRunTime);
@@ -54,7 +55,7 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
         } else {
           iRunTime = 0;
           timer.cancel();
-          if(RunCount+1 == QueueDataList.length) {
+          if (RunCount + 1 == QueueDataList.length) {
             timer.cancel();
           } else {
             Timer.run(() {
@@ -63,7 +64,7 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
           }
         }
         // (RunCount+1 == QueueDataList.length) ? timer.cancel() : RunCount++; //무한 run방지
-        if(RunCount+1 == QueueDataList.length) {
+        if (RunCount + 1 == QueueDataList.length) {
           timer.cancel();
         } else {
           RunCount++;

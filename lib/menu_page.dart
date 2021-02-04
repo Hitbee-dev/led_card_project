@@ -6,14 +6,13 @@ import 'package:led_display_flutter/size.dart';
 const duration = Duration(milliseconds: 300);
 
 class MenuPage extends StatefulWidget {
-
   @override
   _MenuPageState createState() => _MenuPageState();
 }
 
 class _MenuPageState extends State<MenuPage> {
-
   final menuWidth = size.width / 2;
+
   /// MenuPage가 나올 크기 지정
   MenuStatus _menuStatus = MenuStatus.closed;
   double bodyXPos = 0;
@@ -38,7 +37,7 @@ class _MenuPageState extends State<MenuPage> {
                     switch (_menuStatus) {
                       case MenuStatus.opened:
                         bodyXPos = menuWidth;
-                        menuXPos = size.width - menuWidth*2;
+                        menuXPos = size.width - menuWidth * 2;
                         break;
                       case MenuStatus.closed:
                         bodyXPos = 0;

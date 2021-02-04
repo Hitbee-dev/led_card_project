@@ -4,7 +4,8 @@ import 'package:led_display_flutter/size.dart';
 
 class DisplayOutPutColor extends StatefulWidget {
   final Color getcolor;
-  const DisplayOutPutColor({Key key,this.getcolor}) : super(key: key);
+
+  const DisplayOutPutColor({Key key, this.getcolor}) : super(key: key);
 
   @override
   _DisplayOutPutColorState createState() => _DisplayOutPutColorState();

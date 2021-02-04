@@ -52,9 +52,7 @@ class LEDServerState extends State<LEDServer> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        appBar: AppBar(title: Text("LED SERVER"),
-        centerTitle: true
-        ),
+        appBar: AppBar(title: Text("LED SERVER"), centerTitle: true),
         body: Column(
           children: <Widget>[
             ipInfoArea(),
@@ -84,7 +82,7 @@ class LEDServerState extends State<LEDServer> {
           controller: ipCon,
           decoration: InputDecoration(
               contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               isDense: true,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -100,7 +98,7 @@ class LEDServerState extends State<LEDServer> {
         trailing: RaisedButton(
           child: Text((ledSocket != null) ? "Disconnect" : "Connect"),
           onPressed:
-          (ledSocket != null) ? disconnectFromServer : connectToServer,
+              (ledSocket != null) ? disconnectFromServer : connectToServer,
         ),
       ),
     );
@@ -120,7 +118,7 @@ class LEDServerState extends State<LEDServer> {
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 padding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: (item.owner == localIP)
@@ -174,7 +172,7 @@ class LEDServerState extends State<LEDServer> {
       showSnackBarWithKey(
           "Connected to ${socket.remoteAddress.address}:${socket.remotePort}");
       socket.listen(
-            (onData) {
+        (onData) {
           print(String.fromCharCodes(onData).trim());
           setState(() {
             items.insert(
@@ -215,16 +213,14 @@ class LEDServerState extends State<LEDServer> {
     int seatnum = int.parse(message);
     String parseseat;
     String resultseatnum;
-    if(seatnum > -1 && seatnum < 10) {
+    if (seatnum > -1 && seatnum < 10) {
       parseseat = seatnum.toString();
-      resultseatnum = "0"+parseseat;
+      resultseatnum = "0" + parseseat;
     } else {
       resultseatnum = message;
     }
     ledSocket.write(resultseatnum);
   }
-
-
 
   void _storeServerIP() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -254,7 +250,7 @@ class LEDServerState extends State<LEDServer> {
         content: Text(message),
         action: SnackBarAction(
           label: 'Done',
-          onPressed: (){},
+          onPressed: () {},
         ),
       ));
   }
