@@ -24,6 +24,7 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   int RunCount = 0;
   String sRunTime = "";
   Timer timer;
+  String hexResult = "0xff000000";
 
   @override
   void initState() {
@@ -37,7 +38,6 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   void setTimer(iRunTime) {
     Timer.periodic(Duration(milliseconds: iRunTime), (timer) {
       setState(() {
-        // QueueDataList = widget.queuedata;
         if ((RunCount + 4) % 5 == 0) {
           QueueColorResult(RunCount);
           timer.cancel();
@@ -63,12 +63,7 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
             });
           }
         }
-        // (RunCount+1 == QueueDataList.length) ? timer.cancel() : RunCount++; //무한 run방지
-        if (RunCount + 1 == QueueDataList.length) {
-          timer.cancel();
-        } else {
-          RunCount++;
-        }
+        (RunCount + 1 == QueueDataList.length) ? timer.cancel() : RunCount++; //무한 run방지
         print("StartRunTime : ${StartRunTime}");
         print("RunCount : ${RunCount}");
         print("Length : ${QueueDataList.length}");
@@ -85,7 +80,6 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
 
   @override
   Widget build(BuildContext context) {
-    // QueueDataOutPut();
     return SafeArea(
       child: Container(
         width: size.width,
@@ -96,20 +90,25 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   }
 
   void QueueColorResult(int i) {
-    if (QueueDataList[i] == 16777216) {
-      ColorCount = 0; // black
-    } else if (QueueDataList[i] == 16738666) {
-      ColorCount = 1;
-    } else if (QueueDataList[i] == 16150519) {
-      ColorCount = 2;
-    } else if (QueueDataList[i] == 2555649) {
-      ColorCount = 3;
-    } else if (QueueDataList[i] == 65519) {
-      ColorCount = 4;
-    } else if (QueueDataList[i] == 256) {
-      ColorCount = 5;
-    } else if (QueueDataList[i] == "null") {
-      ColorCount;
+    final int minusNum = 16777216;
+    String hexString = "";
+    String hexCode = "0xff";
+    int QueueResult = 0;
+
+    QueueResult = minusNum - QueueDataList[i]; // 16777216 - 들어온 값
+    hexString = QueueResult.toRadixString(16);//들어온 값(10진수) -> 16진수로변환)
+    if(hexString.length == 6) {
+      hexResult = hexCode + hexString;
+    } else if(hexString.length == 5) {
+      hexResult = hexCode + "0" + hexString;
+    } else if(hexString.length == 4) {
+      hexResult = hexCode + "00" + hexString;
+    } else if(hexString.length == 3) {
+      hexResult = hexCode + "000" + hexString;
+    } else if(hexString.length == 2) {
+      hexResult = hexCode + "0000" + hexString;
+    } else if(hexString.length == 1) {
+      hexResult = hexCode + "00000" + hexString;
     } else {
       Fluttertoast.showToast(
           msg: "지정된 색상이 없습니다..",
@@ -121,16 +120,8 @@ class _DisplayOutPutQueueServerState extends State<DisplayOutPutQueueServer> {
   }
 
   Widget _queue_color(BuildContext context) {
-    final colors = [
-      Colors.black,
-      Colors.green[700],
-      Colors.green,
-      Colors.purple,
-      Colors.red,
-      Colors.yellow,
-    ];
     return Scaffold(
-      backgroundColor: colors[ColorCount],
+      backgroundColor: Color(int.parse(hexResult)),
     );
   }
 }
