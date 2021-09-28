@@ -33,8 +33,10 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
   String localIP = "";
 
   // String serverIP = "203.247.38.123";
-  String serverIP = "192.168.0.2";
-  int port = 9870;
+  // String serverIP = "192.168.0.2";
+  // int port = 9870;
+  String serverIP = "203.247.41.152";
+  int port = 50002;
 
   Socket ledSocket;
   int serverCheck = 0;
@@ -87,7 +89,6 @@ class _GroupCheerPageState extends State<GroupCheerPage> {
                   fit: BoxFit.fill)),
           child: Scaffold(
             key: scaffoldKey,
-            resizeToAvoidBottomPadding: false,
             // 키보드 OverFLow방지
             backgroundColor: Colors.transparent,
             //스캐폴드에 백그라운드를 투명하게 한다.

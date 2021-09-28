@@ -47,7 +47,6 @@ class _SoloCheerPageState extends State<SoloCheerPage> {
                 image: AssetImage("assets/images/background.png"),
                 fit: BoxFit.fill)),
         child: Scaffold(
-            resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.transparent, //스캐폴드에 백그라운드를 투명하게 한다.
             appBar: AppBar(
               elevation: 0,
